@@ -1,50 +1,63 @@
 import { Bebas_Neue } from "next/font/google";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "./navigation-menu";
 import Link from "next/link";
 import { Button } from "./button";
 import React from "react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./sheet";
+import type { ComponentLomba } from "@/types/types"
 
 const Neue = Bebas_Neue({
   weight: ["400"],
   subsets: ["latin"],
 });
 
-const components = [
-    {
-        title: "Mobile Legends",
-        href: "/mobile-legends",
-        description: "Cabang Lomba Mobile Legends"
-    },
-    {
-        title: "LCT",
-        href: "/lct",
-        description: "Cabang Lomba Cepat Tepat Komputer"
-    },
-    {
-        title: "CPC",
-        href: "/cpc",
-        description: "Cabang Lomba Competitive Programming Competition"
-    },
-    {
-        title: "Futsal",
-        href: "/futsal",
-        description: "Cabang Lomba Futsal"
-    },
-]
+const components: ComponentLomba[] = [
+  {
+    title: "Mobile Legends",
+    href: "/mobile-legends",
+    description: "Cabang lomba mobile legends ini dapat diikuti oleh umum",
+  },
+  {
+    title: "LCT",
+    href: "/lct",
+    description: "Lomba cepat tepat ini dapat diikuti oleh umum",
+  },
+  {
+    title: "CPC",
+    href: "/cpc",
+    description: "Competitive Programming Competition ini dapat diikuti oleh umum",
+  },
+  {
+    title: "Futsal",
+    href: "/futsal",
+    description: "Cabang lomba futsal ini dapat diikuti oleh umum",
+  },
+];
 
 const Navbar = () => {
   return (
-    <nav className="w-[95%] lg:w-full lg:max-w-3/4 flex items-center justify-between mx-auto p-3 px-4 rounded-md shadow my-2 bg-slate-800">
+    <nav className="max-w-[95%] lg:max-w-[85%] flex items-center justify-between mx-auto p-3 px-4 rounded-md shadow my-2 bg-slate-800">
       <section>
-        <NavigationMenu>
+        <h1 className={`${Neue.className} text-2xl text-slate-200`}>
+          CSS UNILA
+        </h1>
+      </section>
+      <section>
+        <NavigationMenu className="hidden lg:flex">
           <NavigationMenuList className="gap-3">
             <NavigationMenuItem>
               <Button asChild>
@@ -67,28 +80,42 @@ const Navbar = () => {
               </Button>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="bg-slate-700 text-slate-200">Lomba</NavigationMenuTrigger>
-              <NavigationMenuContent className="bg-slate-700">
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] text-slate-200">
-                  {components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
-                    >
-                      {component.description}
-                    </ListItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="hover:bg-slate-900 hover:border-slate-700 bg-slate-700">
+                    Lomba
+                    <i className="bx bx-chevron-down"></i>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-slate-700 text-slate-200 border-0 shadow">
+                  <DropdownMenuLabel>Cabang Lomba</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-slate-500" />
+                  {components.map((item: ComponentLomba) => (
+                    <DropdownMenuItem key={item.title} asChild>
+                      <Link href={item.href}>{item.title}</Link>
+                    </DropdownMenuItem>
                   ))}
-                </ul>
-              </NavigationMenuContent>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-      </section>
-      <section>
-        <h1 className={`${Neue.className} text-2xl text-slate-200`}>
-          CSS UNILA
-        </h1>
+        <Sheet>
+          <SheetTrigger asChild className="inline-block lg:hidden">
+            <Button className="cursor-pointer shadow px-3"><i className="bx bx-menu text-xl"></i></Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[50%] max-w-[500px] bg-slate-800 border-0 shadow">
+            <SheetHeader>
+              <SheetTitle className="text-slate-200">Menu </SheetTitle>
+            </SheetHeader>
+            <section className="flex flex-col gap-1 mt-7 text-slate-200 px-3">
+                <Link href="/home" className="py-3 px-2 rounded-md flex items-center gap-3 active"><i className="bx bxs-home text-lg"></i> Home</Link>
+                <Link href="/about" className="py-3 px-2 rounded-md flex items-center gap-3 hover:bg-slate-200 hover:text-slate-900"><i className="bx bxs-notepad text-lg"></i> About</Link>
+                <Link href="/home" className="py-3 px-2 rounded-md flex items-center gap-3 hover:bg-slate-200 hover:text-slate-900"><i className="bx bx-sitemap text-lg"></i> Lomba</Link>
+                <Link href="/home" className="py-3 px-2 rounded-md flex items-center gap-3 hover:bg-slate-200 hover:text-slate-900"><i className="bx bxs-phone text-lg"></i> Contact</Link>
+            </section>
+          </SheetContent>
+        </Sheet>
       </section>
     </nav>
   );

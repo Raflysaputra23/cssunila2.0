@@ -1,5 +1,7 @@
 import About from "@/components/ui/about";
+import Contact from "@/components/ui/contact";
 import Home from "@/components/ui/home";
+import Lomba from "@/components/ui/lomba";
 import { Fragment } from "react";
 
 
@@ -10,6 +12,8 @@ export default function Dashboard() {
     <Fragment>
         <Home />
         <About />
+        <Lomba />
+        <Contact />
     </Fragment>
   );
 }

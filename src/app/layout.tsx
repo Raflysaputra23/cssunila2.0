@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
+import "boxicons/css/boxicons.min.css";
 
 const poppins = Poppins({
   weight: ["400"],
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${poppins.className} bg-slate-900 antialiased`}
+        className={`${poppins.className} bg-slate-950 antialiased`}
       >
         <Navbar />
         {children}

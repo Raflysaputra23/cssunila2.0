@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useSprings, animated} from "@react-spring/web";
@@ -75,6 +76,9 @@ const SplitText: React.FC<SplitTextProps> = ({
     }))
   );
 
+  const AnimatedSpan = animated.span as unknown as React.FC<any>;
+  
+
   return (
     <p
       ref={ref}
@@ -88,7 +92,7 @@ const SplitText: React.FC<SplitTextProps> = ({
               words.slice(0, wIdx).reduce((acc, w) => acc + w.length, 0) + lIdx;
 
             return (
-              <animated.span
+              <AnimatedSpan
                 key={index}
                 style={
                   {
@@ -99,7 +103,7 @@ const SplitText: React.FC<SplitTextProps> = ({
                 }
               >
                 {letter}
-              </animated.span>
+              </AnimatedSpan>
             );
           })}
           <span className="inline-block w-[0.3em]">&nbsp;</span>

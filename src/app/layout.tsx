@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import "boxicons/css/boxicons.min.css";
+import ClickSpark from "@/components/cursor/CursorClick";
 
 const poppins = Poppins({
   weight: ["400"],
@@ -22,11 +23,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${poppins.className} bg-slate-950 antialiased`}
-      >
-        <Navbar />
-        {children}
+      <body className={`${poppins.className} bg-slate-950 antialiased`}>
+        <ClickSpark
+          sparkColor="#fff"
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+          <Navbar />
+          {children}
+        </ClickSpark>
       </body>
     </html>
   );

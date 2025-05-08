@@ -41,7 +41,9 @@ const FormContact = () => {
         />
         {state?.error?.pesan && <p className="text-xs text-red-500">{state.error.pesan[0]}</p> }
       </section>
-      <Submit>Kirim <i className="bx bxs-send"></i></Submit>
+      <Submit className="cursor-pointer shadow flex items-center gap-2 hover:bg-slate-700 hover:text-slate-950">
+        Kirim <i className="bx bxs-send"></i>
+      </Submit>
     </form>
   );
 };

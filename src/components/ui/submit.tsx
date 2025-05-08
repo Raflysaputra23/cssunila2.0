@@ -4,14 +4,12 @@ import React from "react";
 import { Button } from "./button";
 import { useFormStatus } from "react-dom";
 
-const Submit = (
-    { children }: { children: React.ReactNode }
-) => {
+const Submit = ({ children, className }: { children: React.ReactNode; className: string }) => {
     const status = useFormStatus();
   return (
     <Button
       type="submit"
-      className="cursor-pointer shadow flex items-center gap-2"
+      className={className}
     >
       {status.pending ? <i className="bx bx-loader animate-spin"></i> : children}
     </Button>

@@ -129,6 +129,42 @@
   }
 }
 
+@keyframes pulse-zoom {
+  0%, 100% {
+    transform: scale(.8);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+@keyframes colorShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.text-push {
+  text-shadow: 2px 2px 3px #000;
+}
+
+.animate-zoom {
+  animation: pulse-zoom 6s ease-in-out infinite;
+}
+
+
+.animate-gradient {
+  background: linear-gradient(135deg, #ff00cc, #3333ff, #000099, #ff9900);
+  background-size: 400% 400%;
+  animation: colorShift 15s ease infinite;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

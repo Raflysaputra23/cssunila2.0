@@ -1,5 +1,6 @@
 import About from "@/components/ui/about";
 import Contact from "@/components/ui/contact";
+import Footer from "@/components/ui/footer";
 import Home from "@/components/ui/home";
 import Lomba from "@/components/ui/lomba";
 import Sponsor from "@/components/ui/sponsor";
@@ -13,6 +14,7 @@ export default function Dashboard() {
         <Lomba />
         <Contact />
         <Sponsor />
+        <Footer />
     </Fragment>
   );
 }

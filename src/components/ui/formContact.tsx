@@ -13,7 +13,7 @@ const FormContact = () => {
   return (
     <form
       action={formAction}
-      className="w-[400px] flex-auto p-4 shadow rounded-md bg-slate-800 mt-2"
+      className="w-[400px] flex-auto p-4 shadow rounded-md bg-slate-900 mt-2"
     >
       <section className="grid w-full items-center gap-1.5 text-slate-200 my-2 mb-4">
         <Label htmlFor="nama-lengkap" className="text-md">
@@ -41,7 +41,7 @@ const FormContact = () => {
         />
         {state?.error?.pesan && <p className="text-xs text-red-500">{state.error.pesan[0]}</p> }
       </section>
-      <Submit className="cursor-pointer shadow flex items-center gap-2 hover:bg-slate-700 hover:text-slate-950">
+      <Submit className="cursor-pointer bg-slate-800 shadow flex items-center gap-2 hover:bg-slate-950 hover:text-slate-200">
         Kirim <i className="bx bxs-send"></i>
       </Submit>
     </form>

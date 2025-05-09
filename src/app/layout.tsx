@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${poppins.className} bg-slate-950 antialiased overflow-x-hidden`}>
+      <body className={`${poppins.className} bg-slate-950 overflow-x-hidden antialiased`}>
         <ClickSpark
           sparkColor="#fff"
           sparkSize={10}

@@ -8,6 +8,7 @@ const Submit = ({ children, className }: { children: React.ReactNode; className:
     const status = useFormStatus();
   return (
     <Button
+      disabled
       type="submit"
       className={className}
     >

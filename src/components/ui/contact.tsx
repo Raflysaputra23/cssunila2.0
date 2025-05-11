@@ -1,5 +1,5 @@
 import CircularText from "../text/CircularText";
-import FormContact from "./formContact";
+import FormContact from "../form/FormContact";
 
 const Contact = () => {
   return (

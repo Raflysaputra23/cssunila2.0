@@ -1,11 +1,11 @@
 "use client"
 
 import { useActionState } from "react";
-import { Input } from "./input";
-import { Label } from "./label";
-import { Textarea } from "./textarea";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 import { formContact } from "@/lib/formValidation";
-import Submit from "./submit";
+import Submit from "../ui/submit";
 
 const FormContact = () => {
     const [state, formAction] = useActionState(formContact, null);

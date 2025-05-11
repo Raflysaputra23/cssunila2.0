@@ -4,3 +4,9 @@ export interface ComponentLomba {
     icon?: string;
     description?: string;
   }
+
+
+export interface Login {
+    email: string;
+    password: string;
+}

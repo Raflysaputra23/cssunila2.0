@@ -129,6 +129,19 @@ const Navmenu = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Button asChild>
+            <Link
+              href="/login"
+              className={`${
+                active.contact && "active"
+              } hover:!bg-blue-950 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-blue-900 ms-5`}
+              onClick={() => setActive({ home: false, about: false, lomba: false, contact: true })}
+            >
+              Login
+            </Link>
+          </Button>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

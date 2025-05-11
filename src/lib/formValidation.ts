@@ -2,13 +2,11 @@
 
 import { redirect } from "next/navigation"
 import { formContactSchema, formLoginSchema, formRegisterSchema } from "./formSchema"
-import { createClient } from "@supabase/supabase-js"
 import bcrypt from "bcryptjs"
+import { signIn } from "@/auth"
+import { AuthError } from "next-auth"
+import { database, databaseAdmin } from "./database"
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 const formContact = async (previus: unknown ,formData: FormData) => {
     const validationForm = formContactSchema.safeParse(Object.fromEntries(formData.entries()))
@@ -24,13 +22,31 @@ Pesan: ${validationForm.data.pesan}`
     redirect(`https://wa.me/6285333369015?text=${encodeURIComponent(pesan)}`)
 }
 
-const formLogin = async (formData: { email: string, password: string }) => {
+const formLogin = async (previus: unknown ,formData: FormData) => {
     const validationForm = formLoginSchema.safeParse(formData);
     if(!validationForm.success) {
-        throw new Error(JSON.stringify(validationForm.error?.flatten().fieldErrors))
+        return {
+            error: validationForm.error?.flatten().fieldErrors
+        }
     }
-    return {
-        data: validationForm.data
+    
+    const { email, password } = validationForm.data;
+    
+    try {
+        await signIn("credentials", {
+            email,
+            password,
+            redirectTo: "/",
+        });
+    } catch(error) {
+        if(error instanceof AuthError) {
+            if(error.type === "CredentialsSignin") {
+                return { message: "Invalid email or password" }
+            } else {
+                return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
+            }
+        }
+        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
     }
 }
 
@@ -43,22 +59,23 @@ const formRegister = async (previus: unknown ,formData: FormData) => {
         }
     }
 
-    const { username: name, email, no_telp, password } = validationForm.data;
+    const { username, email, no_telp, password } = validationForm.data;
     const passwordHash = await bcrypt.hash(password, 10);
-    const { data, error} = await supabase.from("users").insert({ name, email, no_telp, password: passwordHash });
+    const {data, error} = await databaseAdmin.from("next-auth.users").insert({ email, password: passwordHash }).select("id").single();
 
-    console.log("error", error)
-    console.log("data", data)
-    if (error) {
-        return {
-            message: "Data gagal disimpan"
-        }
+    if(!data || error) {
+        console.log("ERROR DATABADE: ", error);
+        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
     }
 
-    return {
-        message: "Data berhasil disimpan"
+    const { data: user, error: errorConnection } = await database.from("users").insert({ id: data.id, name: username, email, no_telp }).select("*").single();
+
+    if(!user || errorConnection) {
+        console.log("ERROR DATABADE: ", error);
+        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
     }
-    
+
+    return { message: "Register berhasil" }    
 
 }
 

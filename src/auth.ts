@@ -2,48 +2,49 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { SupabaseAdapter } from "@auth/supabase-adapter"
 import jwt from "jsonwebtoken"
-import { formLogin } from "./lib/formValidation"
-import { Login } from "./types/types"
-import { createClient } from "@supabase/supabase-js"
 import bcrypt from "bcryptjs"
 import { ZodError } from "zod"
+import { formLoginSchema } from "./lib/formSchema"
+import { database, databaseAdmin } from "./lib/database"
  
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       name: "Credentials",
       credentials: {
-        username: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
       }, 
       async authorize(credentials) {
         try {
-          const { username: email, password } = credentials
-          const { data }: { data: Login} = await formLogin({ email, password } as Login)
-          const { data: user, error } = await supabase.from("users").select("*").eq("email", data.email).single()
-
-          if (error || !user) {
-            throw new Error(JSON.stringify(error))
+          const validationForm = formLoginSchema.safeParse(credentials);
+          if(!validationForm.success) {
+            return null
           }
 
-          const checkPassword = await bcrypt.compare(data.password, user.password)
+          const { email, password } = validationForm.data
+          
+          const { data: user, error: errorAuth } = await databaseAdmin.from("next-auth.users").select("*").eq("email", email).single()
+
+          if (!user || errorAuth) {
+            console.log("ERROR DATABASE: ", errorAuth)
+            return null
+          }
+
+          const checkPassword = await bcrypt.compare(password, user.password)
           if (!checkPassword) {
-            throw new Error("Invalid password")
+            return null
           }
 
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            picture: user.image,
-            no_telp: user.no_telp
+          const { data, error } = await database.from("users").select("*").eq("id", user.id).single()
+
+          if (!data || error) {
+            console.log("ERROR DATABASE: ", error)
+            return null
           }
+
+          return data
 
         } catch (error) {
           if (error instanceof ZodError) {

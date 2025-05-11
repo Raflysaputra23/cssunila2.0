@@ -1,41 +1,27 @@
 "use client"
 
-import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Submit from "@/components/ui/submit";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useActionState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { formLogin } from "@/lib/formValidation";
 
 const FormLogin = () => {
-    const error = useSearchParams().get("error");
-
-    useEffect(() => {
-        if (error) {
-            alert(error);
-        }
-    }, [error]);
-
-    const handleSubmit = (formData: FormData) => {
-        signIn("credentials", {
-            email: formData.get("email"),
-            password: formData.get("password"),
-        }, { callbackUrl: "/" });
-    }
+    const [ state, formAction ] = useActionState(formLogin, null);
 
   return (
-    <form action={handleSubmit}>
+    <form action={formAction}>
       <section className="grid w-full max-w-sm items-center gap-1.5 mb-4">
         <Label htmlFor="email">Email</Label>
         <Input type="email" name="email" id="email" placeholder="Email" />
-        <p className="text-xs text-red-500"></p>
+        {state?.error?.email && <p className="text-xs text-red-500">{state.error.email[0]}</p>}
       </section>
       <section className="grid w-full max-w-sm items-center gap-1.5 mb-4">
         <Label htmlFor="password">Password</Label>
         <Input type="password" name="password" id="password" placeholder="password" />
-        <p className="text-xs text-red-500"></p>
+        {state?.error?.password && <p className="text-xs text-red-500">{state.error.password[0]}</p>}
       </section>
       <Submit className="disabled:cursor-not-allowed cursor-pointer w-full text-black bg-slate-200 shadow flex items-center gap-2 hover:bg-slate-950 border border-transparent hover:border-slate-200 hover:text-slate-200">
         Submit

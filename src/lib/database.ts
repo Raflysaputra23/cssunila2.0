@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 
-const createSupabaseServerClient = (token: string) => {
+export const databaseClient = (token: string) => {
     const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
@@ -16,4 +16,12 @@ const createSupabaseServerClient = (token: string) => {
     return supabase;
 }
 
-export default createSupabaseServerClient;
+export const database = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
+)
+
+export const databaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? ""
+  )

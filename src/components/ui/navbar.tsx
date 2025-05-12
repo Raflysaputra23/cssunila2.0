@@ -4,6 +4,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import Navmenu from "./Navmenu";
 import Asidemenu from "./Asidemenu";
+import { SessionProvider } from "next-auth/react";
 
 const Neue = Bebas_Neue({
   weight: ["400"],
@@ -19,8 +20,10 @@ const Navbar = () => {
         </h1>
       </section>
       <section>
-        <Navmenu />
-        <Asidemenu />
+        <SessionProvider>
+          <Navmenu />
+          <Asidemenu />
+        </SessionProvider>
       </section>
     </nav>
   );

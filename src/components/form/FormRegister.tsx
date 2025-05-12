@@ -38,7 +38,7 @@ const FormRegister = () => {
         <Input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" />
         <p className="text-xs text-red-500">{state?.error?.["confirm-password"]?.[0]}</p>
       </section>
-      <Submit className="cursor-pointer mb-3 w-full text-black bg-slate-200 shadow flex items-center gap-2 hover:bg-slate-950 border border-transparent hover:border-slate-200 hover:text-slate-200">
+      <Submit className="disabled:cursor-not-allowed cursor-pointer mb-3 w-full text-black bg-slate-200 shadow flex items-center gap-2 hover:bg-slate-950 border border-transparent hover:border-slate-200 hover:text-slate-200">
         Register
       </Submit>
       <p className="text-xs text-slate-400 text-center">Belum punya akun? <Link href={"/login"} className="text-blue-500" replace={true}>Login</Link></p>

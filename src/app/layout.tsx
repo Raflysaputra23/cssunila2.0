@@ -43,17 +43,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${poppins.className} bg-slate-950 overflow-x-hidden antialiased`}>
-        <ClickSpark
-          sparkColor="#fff"
-          sparkSize={10}
-          sparkRadius={15}
-          sparkCount={8}
-          duration={400}
-        >
-          <Navbar />
-            {children}
-          <Footer />
-        </ClickSpark>
+          <ClickSpark
+            sparkColor="#fff"
+            sparkSize={10}
+            sparkRadius={15}
+            sparkCount={8}
+            duration={400}
+          >
+            <Navbar />
+              {children}
+            <Footer />
+          </ClickSpark>
       </body>
     </html>
   );

@@ -8,7 +8,7 @@ const Submit = ({ children, className }: { children: React.ReactNode; className:
     const status = useFormStatus();
   return (
     <Button
-      disabled
+      disabled={status.pending}
       type="submit"
       className={className}
     >

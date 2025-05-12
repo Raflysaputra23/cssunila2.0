@@ -12,6 +12,8 @@ import {
 } from "./sheet";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { User } from "@/types/types";
+import { signOut, useSession } from "next-auth/react";
 
 const Asidemenu = () => {
   const pathname = usePathname();
@@ -21,6 +23,18 @@ const Asidemenu = () => {
     lomba: false,
     contact: false,
   });
+
+  const { data, status } = useSession();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    setUser(data?.user ?? null);
+  }, [status]);
+
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    signOut();
+  };
 
   useEffect(() => {
     if (window.location.hash == "#about") {
@@ -122,24 +136,26 @@ const Asidemenu = () => {
               </Link>
             </SheetClose>
           </section>
-          <SheetClose asChild>
-            <Link
-              href="/login"
-              className={`${
-                active.contact && "active"
-              } py-3 px-2 rounded-md flex items-center gap-3 hover:bg-blue-950 hover:border-slate-200 border border-transparent transition mb-2 bg-blue-900 text-slate-200 mx-3`}
-              onClick={() =>
-                setActive({
-                  home: false,
-                  about: false,
-                  lomba: false,
-                  contact: true,
-                })
-              }
-            >
-              <i className="bx bx-log-in text-lg"></i> Login
-            </Link>
-          </SheetClose>
+          {user ? (
+            <SheetClose asChild>
+              <Link
+                href="/"
+                className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-red-800 hover:border-slate-200 border border-transparent transition mb-2 bg-red-500 text-slate-200 mx-3`}
+                onClick={handleLogout}
+              >
+                <i className="bx bx-log-out text-lg"></i> Logout
+              </Link>
+            </SheetClose>
+          ) : (
+            <SheetClose asChild>
+              <Link
+                href="/login"
+                className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-blue-950 hover:border-slate-200 border border-transparent transition mb-2 bg-blue-900 text-slate-200 mx-3`}
+              >
+                <i className="bx bx-log-in text-lg"></i> Login
+              </Link>
+            </SheetClose>
+          )}
         </section>
       </SheetContent>
     </Sheet>

@@ -3,13 +3,17 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Submit from "@/components/ui/submit";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formLogin } from "@/lib/formValidation";
+import { signIn } from "next-auth/react"
 
 const FormLogin = () => {
     const [ state, formAction ] = useActionState(formLogin, null);
+    useEffect(() => {
+      // console.log(state)  
+    }, [state])
 
   return (
     <form action={formAction}>
@@ -31,7 +35,7 @@ const FormLogin = () => {
         OR
         <hr className="w-full" />
       </section>
-      <Button disabled className="disabled:cursor-not-allowed w-full text-slate-900 cursor-pointer mb-3" variant={"outline"}><i className="bx bxl-google text-2xl"></i> Google</Button>
+      <Button className="disabled:cursor-not-allowed w-full text-slate-900 cursor-pointer mb-3" variant={"outline"} onClick={() => signIn("google")}><i className="bx bxl-google text-2xl"></i> Google</Button>
       <p className="text-xs text-slate-400 text-center">Belum punya akun? <Link href={"/register"} className="text-blue-500" replace={true}>Register</Link></p>
     </form>
   );

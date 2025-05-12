@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentLomba } from "@/types/types";
+import { ComponentLomba, User } from "@/types/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import { Button } from "./button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 const components: ComponentLomba[] = [
   {
@@ -49,17 +50,29 @@ const components: ComponentLomba[] = [
 ];
 
 const Navmenu = () => {
-  const pathname = usePathname();
-  const [ active, setActive ] = useState<{ [key: string]: boolean }>({ home: false, about: false, lomba: false, contact: false });
+  const { data, status } = useSession();
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
-    if(window.location.hash == "#about") {
-        setActive({ home: false, about: true, lomba: false, contact: false });
-    } else if(window.location.hash == "#lomba") {
-        setActive({ home: false, about: false, lomba: true, contact: false });
-    } else if(window.location.hash == "#contact") {
-        setActive({ home: false, about: false, lomba: false, contact: true });
-    } else if(pathname == "/") {
-        setActive({ home: true, about: false, lomba: false, contact: false });
+    setUser(data?.user ?? null);
+  }, [status]);
+
+  const pathname = usePathname();
+  const [active, setActive] = useState<{ [key: string]: boolean }>({
+    home: false,
+    about: false,
+    lomba: false,
+    contact: false,
+  });
+  useEffect(() => {
+    if (window.location.hash == "#about") {
+      setActive({ home: false, about: true, lomba: false, contact: false });
+    } else if (window.location.hash == "#lomba") {
+      setActive({ home: false, about: false, lomba: true, contact: false });
+    } else if (window.location.hash == "#contact") {
+      setActive({ home: false, about: false, lomba: false, contact: true });
+    } else if (pathname == "/") {
+      setActive({ home: true, about: false, lomba: false, contact: false });
     }
   }, [pathname]);
 
@@ -73,7 +86,14 @@ const Navmenu = () => {
               className={`${
                 active.home && "active"
               } hover:bg-slate-200 hover:text-slate-900 transition`}
-               onClick={() => setActive({ home: true, about: false, lomba: false, contact: false })}
+              onClick={() =>
+                setActive({
+                  home: true,
+                  about: false,
+                  lomba: false,
+                  contact: false,
+                })
+              }
             >
               Home
             </Link>
@@ -86,7 +106,14 @@ const Navmenu = () => {
               className={`${
                 active.about && "active"
               } hover:bg-slate-200 hover:text-slate-900 transition`}
-              onClick={() => setActive({ home: false, about: true, lomba: false, contact: false })}
+              onClick={() =>
+                setActive({
+                  home: false,
+                  about: true,
+                  lomba: false,
+                  contact: false,
+                })
+              }
             >
               About
             </Link>
@@ -99,7 +126,14 @@ const Navmenu = () => {
               className={`${
                 active.contact && "active"
               } hover:bg-slate-200 hover:text-slate-900 transition`}
-              onClick={() => setActive({ home: false, about: false, lomba: false, contact: true })}
+              onClick={() =>
+                setActive({
+                  home: false,
+                  about: false,
+                  lomba: false,
+                  contact: true,
+                })
+              }
             >
               Contact
             </Link>
@@ -112,7 +146,14 @@ const Navmenu = () => {
                 className={`${
                   active.lomba && "active"
                 } hover:bg-slate-200 hover:text-slate-900 transition`}
-                onClick={() => setActive({ home: false, about: false, lomba: true, contact: false })}
+                onClick={() =>
+                  setActive({
+                    home: false,
+                    about: false,
+                    lomba: true,
+                    contact: false,
+                  })
+                }
               >
                 Lomba
                 <i className="bx bx-chevron-down"></i>
@@ -130,17 +171,31 @@ const Navmenu = () => {
           </DropdownMenu>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Button asChild>
-            <Link
-              href="/login"
-              className={`${
-                active.contact && "active"
-              } hover:!bg-blue-950 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-blue-900 ms-5`}
-              onClick={() => setActive({ home: false, about: false, lomba: false, contact: true })}
+          {user ? (
+            <Button
+              className={`hover:!bg-red-800 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-red-500 ms-5`}
+              onClick={() => signOut()}
             >
-              Login
-            </Link>
-          </Button>
+              Logout
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link
+                href="/login"
+                className={` hover:!bg-blue-950 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-blue-900 ms-5`}
+                onClick={() =>
+                  setActive({
+                    home: false,
+                    about: false,
+                    lomba: false,
+                    contact: true,
+                  })
+                }
+              >
+                Login
+              </Link>
+            </Button>
+          )}
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

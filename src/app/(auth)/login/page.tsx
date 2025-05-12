@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <section className="bg-slate-900 w-[95%] max-w-96 mx-auto p-5 rounded-md shadow text-slate-200">
       <h1 className="text-center text-2xl mb-3">Login</h1>
-      <p className="text-sm text-slate-400 text-center mb-8">
+      <p className="text-sm text-slate-400 text-center mb-2">
         Masukkan username dan password anda
       </p>
       <FormLogin />

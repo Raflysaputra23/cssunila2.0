@@ -39,19 +39,19 @@ const formLogin = async (previus: unknown ,formData: FormData) => {
         await signIn("credentials", {
             email,
             password,
-            redirectTo: "/",
+            redirect: false,
         });
-
+        return { status: "success", message: "Login berhasil" }
     } catch(error) {
         if(error instanceof AuthError) {
             if(error.type === "CredentialsSignin") {
-                return { message: "Invalid email or password" }
+                return { 
+                    message: "Email atau password salah" 
+                }
             } else {
-                console.log("Authnya error")
                 return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
             }
         }
-        console.log("ERROR")
         return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
     }
 }
@@ -61,7 +61,6 @@ const formRegister = async (previus: unknown ,formData: FormData) => {
     if(!validationForm.success) {
         return {
             error: validationForm.error?.flatten().fieldErrors,
-            message: validationForm.error?.message
         }
     }
 
@@ -69,18 +68,25 @@ const formRegister = async (previus: unknown ,formData: FormData) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const {data, error: errorAuth} = await databaseAdmin.schema("next_auth").from("users").insert([{email, name: username }]).select("id").single();
     if(!data || errorAuth) {
-        console.log("ERROR DATABADE: ", errorAuth);
-        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
+        return { 
+            status: "error",
+            message: "Email sudah terdaftar" 
+        }
     }
 
     const { data: user, error: errorUser } = await databaseAdmin.from("users").update({no_telp, password: passwordHash}).eq("id", data.id).select("*").single();
 
     if(!user || errorUser) {
-        console.log("ERROR DATABADE: ", errorUser);
-        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
+        return { 
+            status: "error",
+            message: "Terjadi kesalahan, silahkan coba beberapa saat lagi"
+         }
     }
 
-    return { message: "Register berhasil" }    
+    return { 
+        status: "success",
+        message: "Register berhasil" 
+    }    
 
 }
 

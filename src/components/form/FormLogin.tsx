@@ -29,9 +29,9 @@ const FormLogin = () => {
     } else if (message.get("error") === "OAuthAccountNotLinked") {
       MixinAlert("error", "Akun sudah terdaftar");
       const timeout = setTimeout(() => {
-        window.location.reload();
+        window.location.href = "/login";
         clearTimeout(timeout);
-      }, 2000);
+      }, 1500);
     }
   }, [state, message]);
 

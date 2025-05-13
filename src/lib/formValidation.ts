@@ -41,18 +41,25 @@ const formLogin = async (previus: unknown ,formData: FormData) => {
             password,
             redirect: false,
         });
-        return { status: "success", message: "Login berhasil" }
+        return { status: true, message: "Login berhasil" }
     } catch(error) {
         if(error instanceof AuthError) {
             if(error.type === "CredentialsSignin") {
                 return { 
+                    status: false,
                     message: "Email atau password salah" 
                 }
             } else {
-                return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
+                return { 
+                    status: false,
+                    message: "Terjadi kesalahan, silahkan coba beberapa saat lagi"
+                 }
             }
         }
-        return { message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" }
+        return { 
+            status: false,
+            message: "Terjadi kesalahan, silahkan coba beberapa saat lagi"
+         }
     }
 }
 
@@ -69,7 +76,7 @@ const formRegister = async (previus: unknown ,formData: FormData) => {
     const {data, error: errorAuth} = await databaseAdmin.schema("next_auth").from("users").insert([{email, name: username }]).select("id").single();
     if(!data || errorAuth) {
         return { 
-            status: "error",
+            status: false,
             message: "Email sudah terdaftar" 
         }
     }
@@ -78,17 +85,18 @@ const formRegister = async (previus: unknown ,formData: FormData) => {
 
     if(!user || errorUser) {
         return { 
-            status: "error",
+            status: false,
             message: "Terjadi kesalahan, silahkan coba beberapa saat lagi"
          }
     }
 
     return { 
-        status: "success",
+        status: true,
         message: "Register berhasil" 
     }    
 
 }
+
 
 
 export { formContact, formLogin, formRegister }

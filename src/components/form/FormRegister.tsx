@@ -8,12 +8,23 @@ import { formRegister } from "@/lib/formValidation";
 import Link from "next/link";
 import { useEffect, useActionState } from "react";
 import MixinAlert from "../alert/MixinAlert";
+import { useRouter } from "next/navigation";
 
 const FormRegister = () => {
   const [state, formAction] = useActionState(formRegister, null);
+  const router = useRouter();
+
   useEffect(() => {
-    if(state && state?.status) {
-      MixinAlert(state?.status as string, state?.message as string);
+    if(state && state?.message) {
+      if(state.status) {
+        MixinAlert("success", state.message);
+        const timeout = setTimeout(() => {
+          router.push("/login");
+          clearTimeout(timeout);
+        }, 2500);
+      } else {
+        MixinAlert("error", state.message);
+      }
     }
   }, [state]);
 

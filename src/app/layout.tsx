@@ -35,11 +35,12 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${poppins.className} bg-slate-950 overflow-x-hidden antialiased`}>

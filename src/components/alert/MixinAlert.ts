@@ -1,7 +1,9 @@
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-const MixinAlert = (type: string, pesan: string) => {
+export type AlertType = "success" | "error" | "warning" | "info";
+
+const MixinAlert = (type: string = "info", pesan: string = "Tidak ada keterangan") => {
   const MySwal = withReactContent(Swal);
   const Toast = MySwal.mixin({
     toast: true,
@@ -15,7 +17,7 @@ const MixinAlert = (type: string, pesan: string) => {
     },
   });
   Toast.fire({
-    icon: type as "success" | "error" | "warning",
+    icon: type as AlertType,
     title: pesan,
   });
 };

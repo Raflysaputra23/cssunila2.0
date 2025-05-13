@@ -17,7 +17,7 @@ import {
 import { Button } from "./button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 const components: ComponentLomba[] = [
@@ -54,8 +54,44 @@ const Navmenu = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    setUser(data?.user ?? null);
-  }, [status]);
+    if (data && status == "authenticated") {
+      setUser(data.user);
+    }
+  }, [status, data]);
+
+  const handleLogin = useCallback(() => {
+    if (status == "loading") {
+      return (
+        <NavigationMenuItem>
+          <Button className="bg-slate-800" disabled>
+            <i className="bx bx-loader animate-spin"></i>
+          </Button>
+        </NavigationMenuItem>
+      );
+    } else {
+      return (
+        <NavigationMenuItem>
+          {user ? (
+            <Button
+              className={`hover:!bg-red-800 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-red-500 ms-5`}
+              onClick={() => signOut()}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link
+                href="/login"
+                className={` hover:!bg-blue-950 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-blue-900 ms-5`}
+              >
+                Login
+              </Link>
+            </Button>
+          )}
+        </NavigationMenuItem>
+      );
+    }
+  }, [status, user]);
 
   const pathname = usePathname();
   const [active, setActive] = useState<{ [key: string]: boolean }>({
@@ -170,25 +206,7 @@ const Navmenu = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          {user ? (
-            <Button
-              className={`hover:!bg-red-800 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-red-500 ms-5`}
-              onClick={() => signOut()}
-            >
-              Logout
-            </Button>
-          ) : (
-            <Button asChild>
-              <Link
-                href="/login"
-                className={` hover:!bg-blue-950 hover:text-slate-200 hover:border-slate-200 border border-transparent shadow transition !bg-blue-900 ms-5`}
-              >
-                Login
-              </Link>
-            </Button>
-          )}
-        </NavigationMenuItem>
+        {handleLogin()}
       </NavigationMenuList>
     </NavigationMenu>
   );

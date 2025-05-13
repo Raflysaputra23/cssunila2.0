@@ -7,37 +7,36 @@ import { useActionState, useEffect } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formLogin } from "@/lib/formValidation";
-import { signIn } from "next-auth/react";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import MixinAlert from "../alert/MixinAlert";
-import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const FormLogin = () => {
   const message = useSearchParams();
   const [state, formAction] = useActionState(formLogin, null);
-  const router = useRouter();
 
   useEffect(() => {
-    if(state && state?.status) {
-      MixinAlert(state?.status as string, state?.message as string);
-      router.push("/");
-    } else if(message.get("error") === "OAuthAccountNotLinked") {
-      MixinAlert("error", "Akun sudah digunakan");
+    if (state && state?.message) {
+      if (state.status) {
+        MixinAlert("success", state.message);
+        const timeout = setTimeout(() => {
+          window.location.reload();
+          clearTimeout(timeout);
+        }, 2500);
+      } else {
+        MixinAlert("error", state.message);
+      }
+    } else if (message.get("error") === "OAuthAccountNotLinked") {
+      MixinAlert("error", "Akun sudah terdaftar");
+      const timeout = setTimeout(() => {
+        window.location.reload();
+        clearTimeout(timeout);
+      }, 2000);
     }
-  }, [state, message])
+  }, [state, message]);
 
   return (
     <form action={formAction}>
-      {state?.status || state?.message && (
-        <Alert className="bg-slate-800 border-red-500 mb-3" variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            Email atau password salah
-          </AlertDescription>
-        </Alert>
-      )}
       <section className="grid w-full max-w-sm items-center gap-1.5 mb-4 mt-8">
         <Label htmlFor="email">Email</Label>
         <Input type="email" name="email" id="email" placeholder="Email" />
@@ -67,7 +66,7 @@ const FormLogin = () => {
       </section>
       <Button
         type="button"
-        className="disabled:cursor-not-allowed w-full text-slate-900 cursor-pointer mb-3"
+        className="disabled:cursor-not-allowed w-full hover:bg-slate-950 hover:text-slate-200 text-slate-900 cursor-pointer mb-3"
         variant={"outline"}
         onClick={() => signIn("google", { redirectTo: "/" })}
       >

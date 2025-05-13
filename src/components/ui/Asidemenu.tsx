@@ -11,7 +11,7 @@ import {
   SheetTrigger,
 } from "./sheet";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { User } from "@/types/types";
 import { signOut, useSession } from "next-auth/react";
 
@@ -28,13 +28,51 @@ const Asidemenu = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    setUser(data?.user ?? null);
-  }, [status]);
+    if (data && status == "authenticated") {
+      setUser(data.user);
+    }
+  }, [status, data]);
 
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     signOut();
   };
+
+  const handleLogin = useCallback(() => {
+    if (status == "loading") {
+      return (
+        <SheetClose asChild>
+          <Button
+          disabled
+            className={`py-3 px-2 rounded-md flex items-center gap-3 hover:!border-slate-200 border border-transparent transition mb-2 text-slate-200 mx-3`}
+          >
+            <i className="bx bx-loader animate-spin text-2xl"></i>
+          </Button>
+        </SheetClose>
+      );
+    } else {
+      return user ? (
+        <SheetClose asChild>
+          <Link
+            href="/"
+            className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-red-800 hover:border-slate-200 border border-transparent transition mb-2 bg-red-500 text-slate-200 mx-3`}
+            onClick={handleLogout}
+          >
+            <i className="bx bx-log-out text-lg"></i> Logout
+          </Link>
+        </SheetClose>
+      ) : (
+        <SheetClose asChild>
+          <Link
+            href="/login"
+            className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-blue-950 hover:border-slate-200 border border-transparent transition mb-2 bg-blue-900 text-slate-200 mx-3`}
+          >
+            <i className="bx bx-log-in text-lg"></i> Login
+          </Link>
+        </SheetClose>
+      );
+    }
+  }, [status, user]);
 
   useEffect(() => {
     if (window.location.hash == "#about") {
@@ -136,26 +174,7 @@ const Asidemenu = () => {
               </Link>
             </SheetClose>
           </section>
-          {user ? (
-            <SheetClose asChild>
-              <Link
-                href="/"
-                className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-red-800 hover:border-slate-200 border border-transparent transition mb-2 bg-red-500 text-slate-200 mx-3`}
-                onClick={handleLogout}
-              >
-                <i className="bx bx-log-out text-lg"></i> Logout
-              </Link>
-            </SheetClose>
-          ) : (
-            <SheetClose asChild>
-              <Link
-                href="/login"
-                className={`py-3 px-2 rounded-md flex items-center gap-3 hover:bg-blue-950 hover:border-slate-200 border border-transparent transition mb-2 bg-blue-900 text-slate-200 mx-3`}
-              >
-                <i className="bx bx-log-in text-lg"></i> Login
-              </Link>
-            </SheetClose>
-          )}
+          {handleLogin()}
         </section>
       </SheetContent>
     </Sheet>
